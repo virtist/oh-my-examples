@@ -8,6 +8,7 @@ MODULE_DESCRIPTION("A simple Hello world LKM!");
 MODULE_VERSION("0.1");
 
 void foo(void);
+int run_all_test(void);
 
 static int __init hello_start(void)
 {
@@ -16,7 +17,7 @@ static int __init hello_start(void)
 
 	foo();
 
-	return 0;
+	return run_all_test(); // call at last
 }
 
 static void __exit hello_end(void)

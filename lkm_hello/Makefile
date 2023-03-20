@@ -10,8 +10,7 @@ OBJCOPY		?= $(CROSS_COMPILE)objcopy
 # source files
 #
 obj-m 				:= $(MODULE_NAME).o
-$(MODULE_NAME)-objs	:= \
-	main.o \
+$(MODULE_NAME)-objs	:= test.o main.o \
 	foo.o
 
 all:
