@@ -19,8 +19,9 @@ add_executable(hello
 # Test
 #
 
-set(GMOCK_PATH "~/source/libs/googletest-1.8.1/googlemock")
-set(GTEST_PATH "~/source/libs/googletest-1.8.1/googletest")
+set(GOOGLETEST_PATH "../cxx_libs/googletest-1.8.1")
+set(GMOCK_PATH ${GOOGLETEST_PATH}/googlemock)
+set(GTEST_PATH ${GOOGLETEST_PATH}/googletest)
 
 add_executable(test 
     ${GMOCK_PATH}/src/gmock_main.cc
