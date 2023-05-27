@@ -1,0 +1,11 @@
+LIBHELLO_0.1.0 {
+	global:
+		say_hello;
+    local:
+        *;
+};
+
+LIBHELLO_0.2.0 {
+	global:
+		say_hello2;
+} LIBHELLO_0.1.0;

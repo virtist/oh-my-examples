@@ -1,0 +1,12 @@
+# 我的协议
+
+prefix=@PREFIX@
+libdir=@LIBDIR@
+includedir=${prefix}/include
+
+Name: libhello
+Description: hello library
+Version: @VERSION@
+Libs: -L${libdir} -lhello
+Requires.private: 
+Cflags: -I${includedir}
