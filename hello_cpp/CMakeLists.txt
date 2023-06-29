@@ -1,43 +1,46 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(hello)
 
+set(CMAKE_BUILD_TYPE "Debug")
 
-add_definitions(-std=c++11)
-set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -Wall")
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
+# enable c++ 11
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(sources 
-    src/hello.cc
-)
+option(HELLO_BUILD_TESTS "Build unit tests" ON)
+option(HELLO_BUILD_BENCHMARKS "Build benchmarks" ON)
 
-add_executable(hello 
-    src/main.cc
-    ${sources}
-)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-#
-# Test
-#
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Wall -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++11 -Wall -Werror")
 
-set(GOOGLETEST_PATH "../cxx_libs/googletest-1.12.1")
-set(GMOCK_PATH ${GOOGLETEST_PATH}/googlemock)
-set(GTEST_PATH ${GOOGLETEST_PATH}/googletest)
+add_executable(hello src/main.cc)
 
-add_executable(test 
-    ${GMOCK_PATH}/src/gmock_main.cc
-    ${GMOCK_PATH}/src/gmock-all.cc 
-    ${GTEST_PATH}/src/gtest-all.cc
-    ${sources} 
-)
-target_compile_definitions(test PRIVATE ENABLE_TEST=1)
-target_include_directories(test PRIVATE 
-    ${GMOCK_PATH} 
-    ${GMOCK_PATH}/include 
-    ${GTEST_PATH} 
-    ${GTEST_PATH}/include)
+if(HELLO_BUILD_TESTS)
+    enable_testing()
 
-target_link_libraries(test pthread)
+    # Use GoogleTest
+    include(GoogleTest)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/googletest-1.12.1)
 
-add_custom_command(TARGET test POST_BUILD
-    COMMAND ${EXECUTABLE_OUTPUT_PATH}/test
-)
+    file(GLOB HELLO_TESTS_SRCS
+        "src/*_test.cc"
+    )
+
+    add_executable(tests ${HELLO_TESTS_SRCS})
+    target_link_libraries(tests gtest gmock gmock_main)
+    gtest_discover_tests(tests)
+
+
+    # Code Coverage
+    include(CodeCoverage)
+    append_coverage_compiler_flags()
+
+    setup_target_for_coverage_lcov(
+        NAME coverage
+        EXECUTABLE make test -j ${n_cores}
+        DEPENDENCIES tests
+    )
+
+endif()
