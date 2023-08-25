@@ -1,4 +1,6 @@
+.cache
 .DS_Store
 libhello/src/build
 libhello/src/root
-hello_cpp/build/**
+hello-cpp/build
+*:Zone.Identifier
