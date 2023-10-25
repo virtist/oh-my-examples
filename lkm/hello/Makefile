@@ -2,9 +2,17 @@ MODULE_NAME		:= hello
 PWD				:= $(shell pwd)
 EXTRA_CFLAGS	:= -Wall -DKERNEL
 
-KERNEL_DIR	?= /lib/modules/$(shell uname -r)/build
 STRIP		?= $(CROSS_COMPILE)strip
 OBJCOPY		?= $(CROSS_COMPILE)objcopy
+
+KERNEL_SRC	?= /lib/modules/$(shell uname -r)/build
+ifneq ($(wildcard $(KERNEL_SRC).*),)
+	KERNEL_DIR  ?= $(KERNEL_SRC)
+else
+    KERNEL_DIR  ?= ~/linux
+endif
+
+$(info KERNEL_DIR = $(KERNEL_DIR))
 
 #
 # source files
@@ -36,11 +44,10 @@ test: hello
 	sudo rmmod (MODULE_NAME)
 	sudo dmesg | grep '\[ktest\]'
 
-qemu:
-	$(MAKE) -C ~/linux M=$(PWD) modules
+qemu: hello
 	gcc -static qemu_init.c -o init
 	find init $(MODULE_NAME).ko | cpio -o -H newc | gzip -9c > initrd.gz
-	qemu-system-x86_64 -nodefaults -m 256M -kernel ~/linux/arch/x86/boot/bzImage \
+	qemu-system-x86_64 -nodefaults -m 256M -kernel $(KERNEL_DIR)/arch/x86/boot/bzImage \
 		-append "console=ttyS0" \
 		-initrd initrd.gz \
 		-no-reboot -nographic -serial stdio
