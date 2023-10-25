@@ -7,6 +7,14 @@
 #include <linux/reboot.h> /* Definition of LINUX_REBOOT_* constants */
 #include <linux/kdev_t.h> /* MKDEV */
 
+#ifndef MODNAME
+#error "Must set MODNAME"
+#endif
+
+#ifndef MODPARAM
+#error "Must set MODPARAM"
+#endif
+
 // int syscall(SYS_finit_module, int fd, const char *param_values, int flags);
 
 void init_rootfs(void)
@@ -33,13 +41,13 @@ static void poweroff(void)
 
 static void run_test(void)
 {
-	int fd = open("/hello.ko", O_RDONLY);
+	int fd = open(MODNAME, O_RDONLY);
 	if (fd < 0) {
 		printf("load resgaurd failed\n");
 		return;
 	}
 
-	syscall(SYS_finit_module, fd, "run_ktest=y", 0);
+	syscall(SYS_finit_module, fd, MODPARAM, 0);
 	close(fd);
 }
 

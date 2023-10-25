@@ -24,9 +24,10 @@ $(MODULE_NAME)-objs	:= \
 	ktest_example.o \
 	bowling_game.o
 
-all: hello
+all: $(MODULE_NAME).ko
+.PHONY: strip format test qemu clean
 
-hello:
+$(MODULE_NAME).ko:
 	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) modules
 	
 strip:
@@ -39,19 +40,23 @@ format:
 	@echo "Format source files..."
 	@find . -name "*.h" -o -name "*.c" | xargs clang-format -i
 
-test: hello
+test: $(MODULE_NAME).ko
 	sudo insmod (MODULE_NAME).ko run_ktest=y
 	sudo rmmod (MODULE_NAME)
 	sudo dmesg | grep '\[ktest\]'
 
-qemu: hello
-	gcc -static qemu_init.c -o init
+init: qemu_init.c
+	gcc -static -DMODNAME=\"/$(MODULE_NAME).ko\" -DMODPARAM=\"run_ktest=y\" qemu_init.c -o init
+
+initrd.gz: init $(MODULE_NAME).ko
 	find init $(MODULE_NAME).ko | cpio -o -H newc | gzip -9c > initrd.gz
+
+qemu: initrd.gz
 	qemu-system-x86_64 -nodefaults -m 256M -kernel $(KERNEL_DIR)/arch/x86/boot/bzImage \
 		-append "console=ttyS0" \
 		-initrd initrd.gz \
 		-no-reboot -nographic -serial stdio
 
 clean:
-	rm -f init
+	rm -f init initrd.gz
 	find ./ -regextype posix-extended -regex ".*\.(ko|o|mod.c|order|symvers|d|cmd|mod|o.tmp|debug)" | xargs rm -f
