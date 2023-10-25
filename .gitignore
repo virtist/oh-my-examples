@@ -1,5 +1,6 @@
 .cache
 .DS_Store
+build/**
 libhello/src/build
 libhello/src/root
 hello-cpp/build
