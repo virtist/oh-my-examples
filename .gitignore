@@ -5,3 +5,19 @@ libhello/src/build
 libhello/src/root
 hello-cpp/build
 *:Zone.Identifier
+
+
+# Linux kernel
+lkm/**/Module.symvers
+lkm/**/modules.order
+lkm/**/*.ko
+lkm/**/*.o
+lkm/**/*.mod.c
+lkm/**/*.mod
+lkm/**/.*.o.cmd
+lkm/**/.*.ko.cmd
+lkm/**/.*.mod.cmd
+lkm/**/.*.symvers.cmd
+lkm/**/.*.order.cmd
+lkm/**/init
+lkm/**/initrd.gz
