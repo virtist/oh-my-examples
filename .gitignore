@@ -24,3 +24,11 @@ lkm/**/initrd.gz
 
 # python
 __pycache__
+
+# js
+node_modules
+js/package.json
+js/package-lock.json
+
+# go
+go.sum
