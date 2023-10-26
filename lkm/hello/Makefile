@@ -5,13 +5,7 @@ EXTRA_CFLAGS	:= -Wall -DKERNEL
 STRIP		?= $(CROSS_COMPILE)strip
 OBJCOPY		?= $(CROSS_COMPILE)objcopy
 
-KERNEL_SRC	?= /lib/modules/$(shell uname -r)/build
-ifneq ($(wildcard $(KERNEL_SRC).*),)
-	KERNEL_DIR  ?= $(KERNEL_SRC)
-else
-    KERNEL_DIR  ?= ~/linux
-endif
-
+KERNEL_DIR	?= /lib/modules/$(shell uname -r)/build
 $(info KERNEL_DIR = $(KERNEL_DIR))
 
 #
@@ -24,10 +18,10 @@ $(MODULE_NAME)-objs	:= \
 	ktest_example.o \
 	bowling_game.o
 
-all: $(MODULE_NAME).ko
+all: mod
 .PHONY: strip format test qemu clean
 
-$(MODULE_NAME).ko:
+mod:
 	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) modules
 	
 strip:
@@ -40,7 +34,8 @@ format:
 	@echo "Format source files..."
 	@find . -name "*.h" -o -name "*.c" | xargs clang-format -i
 
-test: $(MODULE_NAME).ko
+test: mod
+	dmesg -c > /dev/null
 	sudo insmod (MODULE_NAME).ko run_ktest=y
 	sudo rmmod (MODULE_NAME)
 	sudo dmesg | grep '\[ktest\]'
@@ -48,7 +43,7 @@ test: $(MODULE_NAME).ko
 init: qemu_init.c
 	gcc -static -DMODNAME=\"/$(MODULE_NAME).ko\" -DMODPARAM=\"run_ktest=y\" qemu_init.c -o init
 
-initrd.gz: init $(MODULE_NAME).ko
+initrd.gz: init mod
 	find init $(MODULE_NAME).ko | cpio -o -H newc | gzip -9c > initrd.gz
 
 qemu: initrd.gz
