@@ -21,3 +21,6 @@ lkm/**/.*.symvers.cmd
 lkm/**/.*.order.cmd
 lkm/**/init
 lkm/**/initrd.gz
+
+# python
+__pycache__
