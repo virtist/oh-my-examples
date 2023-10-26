@@ -1,11 +1,12 @@
 .cache
 .DS_Store
 build/**
-libhello/src/build
-libhello/src/root
-hello-cpp/build
 *:Zone.Identifier
 
+# c
+
+c/libhello/src/build
+c/libhello/src/root
 
 # Linux kernel
 lkm/**/Module.symvers
