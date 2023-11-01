@@ -33,3 +33,7 @@ js/package-lock.json
 
 # go
 go.sum
+
+# Rust
+rust/*/target/**
+Cargo.lock
