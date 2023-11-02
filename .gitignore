@@ -37,3 +37,4 @@ go.sum
 # Rust
 rust/*/target/**
 Cargo.lock
+*.profraw
