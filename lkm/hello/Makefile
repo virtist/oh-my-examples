@@ -36,8 +36,8 @@ format:
 
 test: mod
 	dmesg -c > /dev/null
-	sudo insmod (MODULE_NAME).ko run_ktest=y
-	sudo rmmod (MODULE_NAME)
+	sudo insmod $(MODULE_NAME).ko run_ktest=y
+	sudo rmmod $(MODULE_NAME)
 	sudo dmesg | grep '\[ktest\]'
 
 init: qemu_init.c
