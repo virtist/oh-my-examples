@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package hello;
+
+
+message GetRequest {
+    string msg = 1;
+}
+
+message GetResponse {
+    string msg = 1;
+}
+
+
+message PostRequest {
+    bytes data = 1;
+}
+
+message PostResponse {
+    string msg = 1;
+}
+
+service HelloService {
+    rpc Get(GetRequest) returns (GetResponse) {}
+    rpc Post(stream PostRequest) returns (PostResponse) {}
+}

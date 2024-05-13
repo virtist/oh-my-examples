@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 project(hello)
 
 # Use Debug
@@ -8,7 +8,7 @@ endif()
 
 
 # Enable C++ 11
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Options
@@ -50,3 +50,5 @@ if(HELLO_BUILD_COVERAGE)
     )
 endif()
 
+# add_subdirectory(grpc)
+add_subdirectory(bowling_game)
